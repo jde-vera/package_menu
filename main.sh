@@ -6,8 +6,9 @@ select opt in "${options[@]}"
 do
 	case $opt in
 		"recently installed packages")
-		log=$(cat "/var/log/apt/history.log") # () used to run a command 
-		echo "${log:Start-Date: 2025-12-11}"
+		log=$(cat "/var/log/apt/history.log") # () used to run a command
+	       	current_date=$(date "+Start-Date: %Y-%m-%d")	
+		echo "${log:current_date}"
 		;;
 
 		"delete packages")
