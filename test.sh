@@ -11,4 +11,8 @@ else
     cat "/var/log/apt/history.log" >> prac.txt
 fi
 format="Start-Date: 2025-12-01"
-echo $(sed -n "/Start-Date: 2025-12-01/,$p" prac.txt) # -n allows you to controll which lines are printed, $ marks the end and p is to print
+echo $(sed -n "/Start-Date: 2025-12-01/,$p" prac.txt) # -n allows you to control which lines are printed, $ marks the end and p is to print
+
+while read -r line || [[ -n "$line" ]]; do
+    echo "$line"
+done < "test.txt"
