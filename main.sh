@@ -10,10 +10,11 @@ function display_pkg ()
 	fi
 
 	os_check=$(grep '^NAME=' "user_os.txt") # used to check user os and to handle error with files
+	os_check=${os_check,,} 
 
 	while true; do
 		read -p "What is your package manager: " pkg_mg
-		if [[ "$pkg_mg" == "apt" || "$pkg_mg" == "dnf" || "$pkg_mg" == "pacman" ]]; then
+		if [[ ("$os_check" =~ "mint" && "$pkg_mg" == "apt") || ("$os_check"  =~ "fedora" && "$pkg_mg" == "dnf") || ("$os_check"  =~ "arch" && "$pkg_mg" == "pacman") ]]; then
 			rm "user_os.txt"
 			break
 		else
