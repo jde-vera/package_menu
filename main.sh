@@ -36,6 +36,32 @@ function display_pkg ()
 	rm "display.txt"
 }
 
+function rmv_pkg ()
+{
+	param="$@" # i couldn't do parameter expansion directly i.e "${#@}"
+
+	if [[ "${#param}" == 0 || "${#param}" >1 ]]; then 
+		echo "Too many arguments passed"
+		return -1
+	else
+		sudo apt-get --purge remove $1
+	fi
+	return 0
+}
+
+function which_pkg ()
+{
+
+	while true; do
+	read -p "Which package do you want to delete: " pkg
+		if [[ "$(rmv_pkg "$pkg")" == -1 ]]; then 
+			:
+		else
+			break
+		fi
+	done
+}
+
 PS3="Please enter a choice: " # the PS3 variable name is the prompt for the select statement
 options=("recently installed packages" "delete packages" "quit")
 select opt in "${options[@]}"
@@ -47,6 +73,8 @@ do
 		;;
 
 		"delete packages")
+
+		which_pkg
 		;;
 
 		"quit")
