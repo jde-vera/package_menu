@@ -5,10 +5,30 @@ function display_pkg ()
 	log=$"/var/log/apt/history.log" # () used to run a command
 	# current_date=$(date "+Start-Date: %Y-%m-%d")
 	# cat "$log" | grep "^$current_date"
+	
+	package=
+
+	while true; do
+		read -p "What is your package manager: " pkg_mg
+		if [[ "$pkg_mg" == "apt" || "$pkg_mg" == "dnf" || "$pkg_mg" == "pacman" ]]; then
+			package="$pkg_mg"
+			break
+		else
+			echo "Enter a valid package manager (apt, dnf, pacman)"
+		fi	
+	done
+
+	format="Commandline: /usr/bin/"
+	format+="$package install"
 
 	while read -r line || [[ -n "$line" ]]; do
-		if [[ "$line" =~ "Commandline: /usr/bin/apt install" ]]; then
-			echo "$line" >> "display.txt"
+		if [[ "$line" =~ "$format" ]]; then
+			if [ -e "display.txt" ]; then 
+				echo "$line" >> "display.txt"
+			else
+				touch "display.txt"
+				echo "$line" > "display.txt"
+			fi
 		fi
 	done < "$log"
 	
