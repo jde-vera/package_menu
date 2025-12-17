@@ -39,27 +39,15 @@ function display_pkg ()
 function rmv_pkg ()
 {
 	param="$@" # i couldn't do parameter expansion directly i.e "${#@}"
+	param_no="$(echo $param | wc -w)"
 
-	if [[ "${#param}" == 0 || "${#param}" >1 ]]; then 
-		echo "Too many arguments passed"
-		return -1
+	if [[ "$param_no" > 1 ]]; then
+		echo "Too many arguments"
+	elif [[ "$param_no" == 0 ]]; then
+		echo "Too little argument"
 	else
 		sudo apt-get --purge remove $1
 	fi
-	return 0
-}
-
-function which_pkg ()
-{
-
-	while true; do
-	read -p "Which package do you want to delete: " pkg
-		if [[ "$(rmv_pkg "$pkg")" == -1 ]]; then 
-			:
-		else
-			break
-		fi
-	done
 }
 
 PS3="Please enter a choice: " # the PS3 variable name is the prompt for the select statement
@@ -74,7 +62,8 @@ do
 
 		"delete packages")
 
-		which_pkg
+		read -p "Which package do you want to delete: " pkg
+		rmv_pkg "$pkg"
 		;;
 
 		"quit")
