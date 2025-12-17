@@ -1,17 +1,20 @@
 #!/bin/env bash
 function display_pkg ()
 {	
-	# i will add this feature at a later date:
 	log=$"/var/log/apt/history.log" # () used to run a command
-	# current_date=$(date "+Start-Date: %Y-%m-%d")
-	# cat "$log" | grep "^$current_date"
 	
-	package=
+	if [[ -e "user_os.txt" ]]; then # create temp txt file storing user system info
+    :
+	else
+    	cat "/etc/os-release" >> "user_os.txt"
+	fi
+
+	os_check=$(grep '^NAME=' "user_os.txt") # used to check user os and to handle error with files
 
 	while true; do
 		read -p "What is your package manager: " pkg_mg
 		if [[ "$pkg_mg" == "apt" || "$pkg_mg" == "dnf" || "$pkg_mg" == "pacman" ]]; then
-			package="$pkg_mg"
+			rm "user_os.txt"
 			break
 		else
 			echo "Enter a valid package manager (apt, dnf, pacman)"
@@ -19,16 +22,11 @@ function display_pkg ()
 	done
 
 	format="Commandline: /usr/bin/"
-	format+="$package install"
+	format+="$pkg_mg install"
 
 	while read -r line || [[ -n "$line" ]]; do
-		if [[ "$line" =~ "$format" ]]; then
-			if [ -e "display.txt" ]; then 
-				echo "$line" >> "display.txt"
-			else
-				touch "display.txt"
-				echo "$line" > "display.txt"
-			fi
+		if [[ "$line" =~ "$format" ]]; then 
+			echo "$line" >> "display.txt"
 		fi
 	done < "$log"
 	
